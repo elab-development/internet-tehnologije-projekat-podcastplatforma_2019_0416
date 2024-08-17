@@ -1,0 +1,8 @@
+{
+    "require": {
+        "laravel/tinker": "^2.9"
+    },
+    "require-dev": {
+        "laravel/breeze": "^2.1"
+    }
+}
