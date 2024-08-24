@@ -2,63 +2,60 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guest;
 use Illuminate\Http\Request;
 
 class GuestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // GET /api/guests
     public function index()
     {
-        //
+        return Guest::all(); // Vraća sve goste
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // POST /api/guests
     public function store(Request $request)
     {
-        //
+        // Validacija
+        $request->validate([
+            'imePrezimeG' => 'required|string',
+            'firma' => 'required|string',
+        ]);
+
+        // Kreiranje novog gosta
+        $guest = Guest::create($request->all());
+
+        return response()->json(['guest' => $guest], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // GET /api/guests/{id}
+    public function show($id)
     {
-        //
+        $guest = Guest::findOrFail($id); // Vraća gosta po ID-u
+        return response()->json(['guest' => $guest], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // PUT/PATCH /api/guests/{id}
+    public function update(Request $request, $id)
     {
-        //
+        $guest = Guest::findOrFail($id); // Pronađi gosta
+
+        // Validacija
+        $request->validate([
+            'imePrezimeG' => 'sometimes|required|string',
+            'firma' => 'sometimes|required|string',
+        ]);
+
+        // Ažuriranje gosta
+        $guest->update($request->all());
+
+        return response()->json(['guest' => $guest], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // DELETE /api/guests/{id}
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        Guest::destroy($id); // Briše gosta
+        return response()->json(['message' => 'Guest deleted successfully'], 200);
     }
 }
