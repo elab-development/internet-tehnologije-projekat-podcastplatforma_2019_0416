@@ -4,25 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class AddUniqueConstraintToEmailInUsersTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
+        // Dodavanje jedinstvenog ograničenja na 'email' kolonu
         Schema::table('users', function (Blueprint $table) {
-            //
+            // Prvo proveri da li email već nije jedinstven
+            $table->string('email')->unique()->change(); // Postavljanje jedinstvenog ograničenja
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
+        // Uklanjanje jedinstvenog ograničenja
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->dropUnique(['email']); // Uklanjanje jedinstvenog ograničenja
         });
     }
-};
+}
