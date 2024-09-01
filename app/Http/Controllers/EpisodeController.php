@@ -6,17 +6,14 @@ use App\Models\Episode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class EpisodeController extends Controller
-{
+class EpisodeController extends Controller {
     // GET /api/episodes
-    public function index()
-    {
+    public function index() {
         return Episode::all(); // Vraća sve epizode
     }
 
     // POST /api/episodes
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         // Validacija
         $request->validate([
             'kljucneReci' => 'required|string',
@@ -45,20 +42,32 @@ class EpisodeController extends Controller
     }
 
     // GET /api/episodes/{id}
-    public function show($id)
-    {
+    public function show($id) {
         $episode = Episode::findOrFail($id); // Vraća epizodu po ID-u
-       // Generiši URL za medijski fajl 
-$mediaUrl = Storage::url($episode->audio_video_path); 
+        // Generiši URL za medijski fajl 
+        $mediaUrl = Storage::url($episode->audio_video_path);
 
-return response()->json([
- 'episode' => $episode,
- 'media_url' => $mediaUrl, ], 200); } // Dodaj URL za reprodukciju 
-    
+        return response()->json([
+            'episode' => $episode,
+            'media_url' => $mediaUrl,
+        ], 200);
+    } // Dodaj URL za reprodukciju 
+
+    // GET /api/episodes/{id}
+    public function show($keywords) {
+        $episode = Episode::findByKeywordsOrFail($keywords); // Vraća epizodu po ključnim rečima
+        // Generiši URL za medijski fajl 
+        $mediaUrl = Storage::url($episode->audio_video_path);
+
+        return response()->json([
+            'episode' => $episode,
+            'media_url' => $mediaUrl,
+        ], 200);
+    } // Dodaj URL za reprodukciju 
+
 
     // PUT/PATCH /api/episodes/{id}
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $episode = Episode::findOrFail($id); // Pronađi epizodu
 
         // Validacija
@@ -88,8 +97,7 @@ return response()->json([
     }
 
     // DELETE /api/episodes/{id}
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $episode = Episode::findOrFail($id); // Pronađi epizodu
 
         // Briši fajl pre nego što obrišeš epizodu
@@ -99,4 +107,3 @@ return response()->json([
         return response()->json(['message' => 'Episode deleted successfully'], 200);
     }
 }
-
