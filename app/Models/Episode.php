@@ -27,4 +27,9 @@ class Episode extends Model
     {
         return $this->belongsTo(Guest::class);
     }
+
+    public function findByKeywordsOrFail($keywords)
+    {
+        return $this->where('kljucneReci', 'like', '%' . $keywords . '%')->firstOrFail();
+    }
 }
