@@ -44,26 +44,26 @@ class EpisodeController extends Controller {
     // GET /api/episodes/{id}
     public function show($id) {
         $episode = Episode::findOrFail($id); // Vraća epizodu po ID-u
-        // Generiši URL za medijski fajl 
+        // Generiši URL za medijski fajl
         $mediaUrl = Storage::url($episode->audio_video_path);
 
         return response()->json([
             'episode' => $episode,
             'media_url' => $mediaUrl,
         ], 200);
-    } // Dodaj URL za reprodukciju 
+    } // Dodaj URL za reprodukciju
 
-    // GET /api/episodes/{id}
+    // GET /api/episodes/{keywords}
     public function show($keywords) {
         $episode = Episode::findByKeywordsOrFail($keywords); // Vraća epizodu po ključnim rečima
-        // Generiši URL za medijski fajl 
+        // Generiši URL za medijski fajl
         $mediaUrl = Storage::url($episode->audio_video_path);
 
         return response()->json([
             'episode' => $episode,
             'media_url' => $mediaUrl,
         ], 200);
-    } // Dodaj URL za reprodukciju 
+    } // Dodaj URL za reprodukciju
 
 
     // PUT/PATCH /api/episodes/{id}

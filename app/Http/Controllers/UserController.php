@@ -50,6 +50,9 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id); // Pronađi korisnika
 
+        // Izbacena mogucnost da se menja isAdmin
+        $request -> offsetUnset('isAdmin'); // (valjda)
+
         // Validacija
         $request->validate([
             'role' => 'sometimes|required|string',

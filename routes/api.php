@@ -1,3 +1,5 @@
+<?php
+
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\GuestController;
@@ -15,4 +17,9 @@ Route::post('logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('api/episodes', [EpisodeController::class, 'store'])->middleware('admin');
+    Route::put('api/episodes/{id}', [EpisodeController::class, 'store'])->middleware('admin');
 });
