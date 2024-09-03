@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Laravel\Sanctum\PersonalAccessToken; 
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -55,6 +55,27 @@ class AuthController extends Controller
         // Ako kredencijali nisu ispravni
         return response()->json(['message' => 'Unauthorized'], 401);
     }
+
+    public function resetPassword(Request $request)
+    {
+        // Validacija podataka
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        // Pronađi korisnika i ažuriraj lozinku
+        $user = User::where('email', $request->email)->first();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json(['message' => 'Password has been reset successfully.']);
+    }
+
 
     // Odjava korisnika
     public function logout(Request $request)
