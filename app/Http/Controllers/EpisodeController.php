@@ -53,17 +53,30 @@ class EpisodeController extends Controller {
         ], 200);
     } // Dodaj URL za reprodukciju
 
-    // GET /api/episodes/{keywords}
-    public function show($keywords) {
-        $episode = Episode::findByKeywordsOrFail($keywords); // Vraća epizodu po ključnim rečima
-        // Generiši URL za medijski fajl
-        $mediaUrl = Storage::url($episode->audio_video_path);
+    public function search(Request $request)
+    {
+        $request->validate([
+            'keyword' => 'required|string',
+        ]);
 
-        return response()->json([
-            'episode' => $episode,
-            'media_url' => $mediaUrl,
-        ], 200);
-    } // Dodaj URL za reprodukciju
+        $keyword = $request->keyword;
+
+        $episodes = Episode::where('kljucneReci', 'LIKE', "%{$keyword}%")->get();
+
+        return response()->json($episodes);
+    }
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:mp4,mp3|max:20480', // Max 20MB
+        ]);
+
+        $file = $request->file('file');
+        $path = $file->store('podcasts'); // Folder gde se čuvaju fajlovi
+
+        return response()->json(['message' => 'File uploaded successfully.', 'path' => $path]);
+    }
 
 
     // PUT/PATCH /api/episodes/{id}
