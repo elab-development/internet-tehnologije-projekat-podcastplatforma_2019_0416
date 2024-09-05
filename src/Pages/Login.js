@@ -7,6 +7,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isSignup, setIsSignup] = useState(false); // State to toggle between login and signup
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -14,7 +15,7 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3000', {
+      const response = await axios.post('http://localhost:3000/login', {
         email,
         password,
       });
@@ -29,10 +30,30 @@ const Login = () => {
     }
   };
 
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      const response = await axios.post('http://localhost:3000/signup', {
+        email,
+        password,
+      });
+
+      // Store the token in local storage or any other storage
+      localStorage.setItem('token', response.data.token);
+
+      // Redirect to the Podcast Gallery page
+      navigate('/podcasts');
+    } catch (error) {
+      setError('Signup failed');
+    }
+  };
+
   return (
     <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+      <h2>{isSignup ? 'Sign Up' : 'Login'}</h2>
+      <form onSubmit={isSignup ? handleSignup : handleLogin}>
         <div>
           <label>Email:</label>
           <input
@@ -52,7 +73,14 @@ const Login = () => {
           />
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">Login</button>
+        <button type="submit">{isSignup ? 'Sign Up' : 'Login'}</button>
+        <button
+          type="button"
+          onClick={() => setIsSignup(!isSignup)}
+          className="toggle-button"
+        >
+          {isSignup ? 'Already have an account? Login' : 'Need an account? Sign Up'}
+        </button>
       </form>
     </div>
   );

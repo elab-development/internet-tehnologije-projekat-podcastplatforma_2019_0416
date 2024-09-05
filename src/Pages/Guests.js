@@ -1,19 +1,38 @@
 import React from 'react';
-//import './Guests.css';  // Add some styling if necessary
+import './Guests.css';
 
-function Guests() {
+const guestsData = [
+  {
+    name: 'John Doe',
+    imageSrc: '/images/John.jpg', 
+    description: 'John Doe is a renowned speaker known for his insights on technology and innovation.'
+  },
+  {
+    name: 'Jane Smith',
+    imageSrc: '/images/Jane.jpg',
+    description: 'Jane Smith is a celebrated author and thought leader in the field of literature.'
+  },
+];
+
+const Guests = () => {
   return (
-    <div className="guests">
-      <h1>Meet Our Guests</h1>
-      <p>Learn more about the inspiring people who share their stories on our platform.</p>
-      {/* Replace this with dynamic content in the future */}
-      <ul>
-        <li>Guest 1</li>
-        <li>Guest 2</li>
-        <li>Guest 3</li>
-      </ul>
+    <div className='guests'>
+      <h1>Upcoming Guests</h1>
+      <div className='guests__container'>
+        {guestsData.map((guest, index) => (
+          <div key={index} className='guest-card'>
+            <div className='guest-card__image'>
+              <img src={guest.imageSrc} alt={guest.name} />
+            </div>
+            <div className='guest-card__info'>
+              <h2 className='guest-card__name'>{guest.name}</h2>
+              <p className='guest-card__description'>{guest.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default Guests;

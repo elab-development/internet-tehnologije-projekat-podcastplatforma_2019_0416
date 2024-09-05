@@ -1,0 +1,17 @@
+.podcasts {
+    padding: 2rem;
+    background: #f9f9f9;
+  }
+  
+  .podcasts h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .podcasts__container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+  

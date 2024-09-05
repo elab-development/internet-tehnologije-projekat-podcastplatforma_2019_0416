@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import './navBar.css';
+import logo from './mylogo.png';
 
 function NavBar() {
   return (
     <nav className='navbar'>
       <div className='navbar-logo'>
-        {/* Link your logo or brand name here */}
-        <Link to='/'>MyLogo</Link>
+      <Link to='/'>
+      <img src= {logo} alt='Logo' className='logo-image' />
+      </Link>
       </div>
       <ul className='nav-menu'>
         <li className='nav-item'>
