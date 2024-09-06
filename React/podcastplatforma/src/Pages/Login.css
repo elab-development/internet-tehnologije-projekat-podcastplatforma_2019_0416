@@ -1,0 +1,47 @@
+.login-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+form div {
+  margin-bottom: 15px; /* Add space between input groups */
+}
+
+label {
+  display: block; /* Ensure labels are block level for full width */
+  margin-bottom: 5px; /* Add space between label and input */
+}
+
+input {
+  width: 100%; /* Ensure input fields are full width */
+  padding: 8px; /* Add padding inside input fields */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.toggle-button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
