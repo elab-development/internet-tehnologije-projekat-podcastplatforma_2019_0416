@@ -1,0 +1,55 @@
+.search-bar {
+    display: flex;
+    justify-content: center;
+    margin: 50px  0;
+  }
+  
+  .search-bar form {
+    display: center;
+    align-items: center;
+    position: relative; 
+    gap: 20px; 
+  }
+  
+  .search-bar__container {
+    position: relative; /* For positioning the tooltip within the container */
+  }
+  
+  .search-bar input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    width: 250px; /* Set a fixed width or adjust as needed */
+  }
+  
+  .search-bar button {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .search-bar button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Tooltip styles */
+  .search-bar__tooltip {
+    position: absolute;
+    top: 100%; /* Position below the input */
+    left: 0;
+    padding: 8px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    z-index: 10; /* Ensure it appears above other elements */
+    margin-top: 5px;
+  }
+  
