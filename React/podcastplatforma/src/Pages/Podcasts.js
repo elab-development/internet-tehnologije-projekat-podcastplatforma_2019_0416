@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import SearchBar from '../SearchBar';
 import './Podcasts.css';
 import CardItem from '../CardItem';
@@ -10,7 +11,9 @@ const Podcasts = ({ user }) => {
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
+  // podkast podaci
   const podcastsData = [
     {
       title: 'Podcast 1',
@@ -50,12 +53,14 @@ const Podcasts = ({ user }) => {
     podcast.keywords.some(keyword => keyword.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  // Je l admin?
+  // ako nije loginovan onda redirect
   useEffect(() => {
-    if (user && user.role === 'admin') {
-      setIsAdmin(true);
+    if (!user) {
+      navigate('/login'); // Redirect to login page if user is not logged in
+    } else if (user.role === 'admin') {
+      setIsAdmin(true); // Set admin flag if user is an admin
     }
-  }, [user]);
+  }, [user, navigate]);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -76,7 +81,7 @@ const Podcasts = ({ user }) => {
     formData.append('title', title);
 
     try {
-      const response = await axios.post('/api/podcasts/upload', formData, {
+      await axios.post('/api/podcasts/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: Bearer ${user.token},
@@ -93,7 +98,7 @@ const Podcasts = ({ user }) => {
       <h1>Podcast Gallery</h1>
       <SearchBar onSearch={setSearchQuery} />
 
-      {/* za admina kacenje*/} 
+      {/* za admina kacenje */}
       {isAdmin && (
         <div className='upload-section'>
           <h2>Upload a New Podcast</h2>
