@@ -1,0 +1,35 @@
+.podcast-item{
+    margin: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(56, 125, 255, 0.17);
+    background-color: #d1ecff;
+}
+
+.podcast-item__content{
+    display: flex;
+    flex-direction: column;
+}
+
+.podcast-item__video {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+
+.podcast-item__info {
+    padding: 15px;
+}
+
+.podcast-item__description {
+    color: #252e48;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.podcast-item__ketwords{
+    color: #666;
+    font-size: 12px;
+    font-style: italic;
+}
