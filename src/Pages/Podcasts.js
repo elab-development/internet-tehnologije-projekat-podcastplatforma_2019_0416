@@ -21,21 +21,21 @@ const Podcasts = () => {
     },
     {
       title: 'Podcast 3',
-      description: 'Description for Podcast 2',
-      keywords: ['science', 'education'],
-      videoSrc: '/videos/podcast2.mp4'
+      description: 'Description for Podcast 3',
+      keywords: ['nature', 'science'],
+      videoSrc: '/videos/podcast3.mp4'
     },
     {
       title: 'Podcast 4',
-      description: 'Description for Podcast 2',
-      keywords: ['science', 'education'],
-      videoSrc: '/videos/podcast2.mp4'
+      description: 'Description for Podcast 4',
+      keywords: ['finance', 'education'],
+      videoSrc: '/videos/podcast4.mp4'
     },
     {
       title: 'Podcast 5',
-      description: 'Description for Podcast 1',
-      keywords: ['tech', 'innovation'],
-      videoSrc: '/videos/podcast1.mp4'
+      description: 'Description for Podcast 5',
+      keywords: ['tech', 'AI'],
+      videoSrc: '/videos/podcast5.mp4'
     }  ];
 
   const filteredPodcasts = podcastsData.filter(podcast => 
@@ -50,8 +50,8 @@ const Podcasts = () => {
       <SearchBar onSearch={setSearchQuery} />
       <div className='podcasts__container'>
         {filteredPodcasts.length > 0 ? (
-          filteredPodcasts.map((podcast, index) => (
-            <CardItem key={index} podcast={podcast} />
+          filteredPodcasts.map((podcast) => (
+            <CardItem key={podcast.title} podcast={podcast} />
           ))
         ) : (
           <p>No podcasts found.</p>
