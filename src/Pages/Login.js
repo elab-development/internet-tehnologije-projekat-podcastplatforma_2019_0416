@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
@@ -81,6 +81,15 @@ const Login = () => {
         >
           {isSignup ? 'Already have an account? Login' : 'Need an account? Sign Up'}
         </button>
+
+        {!isSignup && (
+          <div style={{ marginTop: '15px', textAlign: 'center' }}>
+            <Link to="/request-password-reset" style={{ color: '#0066cc', textDecoration: 'none' }}>
+             Forgot password?
+            </Link>
+          </div>
+        )}
+
       </form>
     </div>
   );
