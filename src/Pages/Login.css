@@ -37,11 +37,30 @@ button:hover {
   background-color: #0056b3;
 }
 
+.toggle-button:hover{
+  text-decoration: underline;
+  background: none;
+  color: #0066cc;
+}
+
 .toggle-button {
   background: none;
   border: none;
-  color: #007bff;
+  color: #0066cc;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.93rem;
   margin-top: 10px;
+  text-decoration: none;
+}
+
+.forgot-password-link {
+  display: block;
+  margin-top: 15px;
+  text-align: center;
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
 }

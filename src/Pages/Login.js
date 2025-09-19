@@ -83,8 +83,8 @@ const Login = () => {
         </button>
 
         {!isSignup && (
-          <div style={{ marginTop: '15px', textAlign: 'center' }}>
-            <Link to="/request-password-reset" style={{ color: '#0066cc', textDecoration: 'none' }}>
+          <div className="forgot-password-container">
+            <Link to="/request-password-reset" className="forgot-password-link">
              Forgot password?
             </Link>
           </div>
