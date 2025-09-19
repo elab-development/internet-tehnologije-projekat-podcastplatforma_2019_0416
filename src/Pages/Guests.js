@@ -12,6 +12,11 @@ const guestsData = [
     imageSrc: '/images/Jane.jpg',
     description: 'Jane Smith is a celebrated author and thought leader in the field of literature.'
   },
+  {
+    name: 'Neil deGrasse Tyson',
+    imageSrc: '/images/neil.jpg',
+    description: 'Neil deGrasse Tyson is an American astrophysicist, author, and science communicator.'
+  }
 ];
 
 const Guests = () => {
