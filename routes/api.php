@@ -46,7 +46,7 @@ Route::middleware('auth:sanctum')->post('/episodes/upload', [EpisodeController::
 // Search functionality
 Route::get('/episodes/search', [EpisodeController::class, 'search'])->name('episodes.search');
 
-// Resource route for episodes (dodaj samo ako želiš)
+// Resource route for episodes
 Route::middleware('auth:sanctum')->apiResource('episodes', EpisodeController::class)->except(['index', 'show']);
 
 

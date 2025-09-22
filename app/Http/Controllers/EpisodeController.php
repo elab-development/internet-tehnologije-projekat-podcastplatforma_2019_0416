@@ -48,7 +48,7 @@ class EpisodeController extends Controller
 
     public function search(Request $request)
     {
-        $searchTerm = $request->query('kljucneReci');
+        $searchTerm = $request->query('kljucneReci'); //ili input
 
         $episodes = Episode::where('kljucneReci', 'like', '%' . $searchTerm . '%')->get();
 
@@ -115,7 +115,7 @@ class EpisodeController extends Controller
         return response()->json(['message' => 'Episode deleted successfully'], 200);
     }
 
-public function upload(Request $request)
+public function upload(Request $request) //da li je user admin
 {
     $request->validate([
         'audio_video' => 'required|file|mimes:mp3,mp4,wav|mimetypes:video/mp4,video/mpeg,audio/mpeg,audio/wav|max:20480',
