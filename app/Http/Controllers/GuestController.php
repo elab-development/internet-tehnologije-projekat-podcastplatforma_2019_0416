@@ -28,10 +28,11 @@ class GuestController extends Controller
         $request->validate([
             'imePrezimeG' => 'required|string',
             'firma' => 'required|string',
+            'bio' => 'required|string'
         ]);
 
         // Create a new guest
-        $guest = Guest::create($request->only(['imePrezimeG', 'firma']));
+        $guest = Guest::create($request->only(['imePrezimeG', 'firma',  'bio']));
 
         return redirect()->route('guests.index'); // Redirect to guest list after creation
     }
@@ -114,10 +115,11 @@ class GuestController extends Controller
         $request->validate([
             'imePrezimeG' => 'sometimes|required|string',
             'firma' => 'sometimes|required|string',
+            'bio' => 'sometimes|required|string'
         ]);
 
         // Update guest fields
-        $guest->update($request->only(['imePrezimeG', 'firma']));
+        $guest->update($request->only(['imePrezimeG', 'firma', 'bio']));
 
         return response()->json(['guest' => $guest], 200);
     }
