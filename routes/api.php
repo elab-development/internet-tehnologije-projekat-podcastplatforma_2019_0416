@@ -12,7 +12,7 @@ use App\Http\Controllers\RegisteredUserController;
 // Public routes (no authentication required)
 Route::get('/guests', [GuestController::class, 'index'])->name('guests.index'); // List all guests
 Route::get('/episodes', [EpisodeController::class, 'index'])->name('episodes.index'); // List all episodes
-Route::get('/episodes/{id}', [EpisodeController::class, 'show'])->name('episodes.show'); // Show episode details
+Route::get('/episodes/{id}', [EpisodeController::class, 'show'])->whereNumber('id')->name('episodes.show'); // Show episode details
 
 Route::post('login', [AuthController::class, 'login']); // Login route
 Route::post('register', [AuthController::class, 'register']); // Registration route
