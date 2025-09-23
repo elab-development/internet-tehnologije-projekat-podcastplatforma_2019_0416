@@ -36,17 +36,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Password reset routes
+// Password reset
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
-// Upload functionality
+// Upload
 Route::middleware('auth:sanctum')->post('/episodes/upload', [EpisodeController::class, 'upload'])->name('episodes.upload');
 
-// Search functionality
+// Search
 Route::get('/episodes/search', [EpisodeController::class, 'search'])->name('episodes.search');
 
-// Resource route for episodes
+// Resource route
 Route::middleware('auth:sanctum')->apiResource('episodes', EpisodeController::class)->except(['index', 'show']);
 
-
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
