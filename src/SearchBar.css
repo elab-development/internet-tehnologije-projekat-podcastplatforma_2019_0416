@@ -24,7 +24,7 @@
     width: 250px; /* Set a fixed width or adjust as needed */
   }
   
-  .search-bar button {
+  /* .search-bar button {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -36,7 +36,7 @@
   
   .search-bar button:hover {
     background-color: #0056b3;
-  }
+  } */
   
   /* Tooltip styles */
   .search-bar__tooltip {

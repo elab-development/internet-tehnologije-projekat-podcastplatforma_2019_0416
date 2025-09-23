@@ -26,8 +26,12 @@ const Home = () => {
           <h1>Welcome to Podcast Platform</h1>
           <p>Discover exclusive podcasts and join a vibrant community of creators!</p>
           <div className='hero__cta'>
+
+
             <Link to='/login' className='btn btn--primary'>Sign Up for Premium Podcasts</Link>
             <Link to='/login' className='btn btn--secondary'>Join Our Creators Family</Link>
+
+            
           </div>
         </div>
       </section>

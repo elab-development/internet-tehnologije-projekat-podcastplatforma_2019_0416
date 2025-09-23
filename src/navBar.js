@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import './navBar.css';
 import logo from './mylogo.png';
+import { Button } from './Button';
 
 function NavBar() {
   return (
@@ -27,11 +28,16 @@ function NavBar() {
           </Link>
         </li>
       </ul>
+
       <div className='navbar-right'>
-        <Link to='/login' className='login-button'>
+
+        <Button buttonStyle='btn--outline' buttonSize='btn--medium' link='/login'>
           Login
-        </Link>
+        </Button>
+
       </div>
+
+
     </nav>
   );
 }

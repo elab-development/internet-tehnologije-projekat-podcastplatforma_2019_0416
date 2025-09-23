@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './SearchBar.css';
+import { Button } from './Button';
 
 const SearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState('');
@@ -34,7 +35,15 @@ const SearchBar = ({ onSearch }) => {
             </div>
           )}
         </div>
-        <button type='submit'>Search</button>
+
+        <Button 
+          type="submit"
+          buttonStyle="btn--solid-black"
+          buttonSize="btn--medium"
+        >
+          Search
+        </Button>
+
       </form>
     </div>
   );

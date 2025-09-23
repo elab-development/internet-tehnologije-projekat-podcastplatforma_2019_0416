@@ -42,7 +42,7 @@
   transition: text-decoration 0.2s ease-out;
 }
 
-.navbar-right a {
+/* .navbar-right a {
   color: #fff;
   background-color: #007bff;
   padding: 10px 15px;
@@ -54,4 +54,4 @@
 .navbar-right a:hover {
   background-color: #0056b3;
   transition: background-color 0.2s ease-out;
-}
+} */

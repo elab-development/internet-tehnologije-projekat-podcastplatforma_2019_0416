@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
+import { Button } from '../Button';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -73,14 +74,29 @@ const Login = () => {
           />
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">{isSignup ? 'Sign Up' : 'Login'}</button>
-        <button
+
+
+        <Button 
+          type="submit"
+          buttonStyle="btn--primary"
+          buttonSize="btn--medium"
+        >
+          {isSignup ? 'Sign Up' : 'Login'}
+        </Button>
+
+
+        <Button 
           type="button"
           onClick={() => setIsSignup(!isSignup)}
+          buttonStyle="btn--solid-black"
+          buttonSize="btn--medium"
           className="toggle-button"
         >
+
           {isSignup ? 'Already have an account? Login' : 'Need an account? Sign Up'}
-        </button>
+        </Button>
+
+
 
         {!isSignup && (
           <div className="forgot-password-container">

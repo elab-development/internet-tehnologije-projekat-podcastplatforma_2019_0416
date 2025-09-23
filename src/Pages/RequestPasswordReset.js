@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './RequestPasswordReset.css'; // Create this CSS file for styling
+import './RequestPasswordReset.css'; 
+import { Button } from '../Button';
 
 const RequestPasswordReset = () => {
   const [email, setEmail] = useState('');
@@ -35,7 +36,15 @@ const RequestPasswordReset = () => {
         </div>
         {message && <p style={{ color: 'green' }}>{message}</p>}
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">Send Reset Link</button>
+
+        <Button 
+          type="submit" 
+          buttonStyle="btn--primary" 
+          buttonSize="btn--medium"
+        >
+          Send Reset Link
+        </Button>
+
       </form>
     </div>
   );

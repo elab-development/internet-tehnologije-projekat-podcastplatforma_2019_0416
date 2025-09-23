@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import './ResetPassword.css';
+import { Button } from '../Button';
 
 const ResetPassword = () => {
   const { token } = useParams(); // Get the token from the URL
@@ -60,7 +61,17 @@ const ResetPassword = () => {
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
         {success && <p style={{ color: 'green' }}>{success}</p>}
-        <button type="submit">Reset Password</button>
+
+
+        <Button 
+          type="submit" 
+          buttonStyle="btn--primary" 
+          buttonSize="btn--medium"
+        >
+          Reset Password
+        </Button>
+
+
       </form>
     </div>
   );

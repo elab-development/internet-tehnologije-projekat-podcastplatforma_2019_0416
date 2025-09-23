@@ -28,12 +28,12 @@
   
   .btn--medium {
     padding: 8px 10px;
-    font-size: 10px;
+    font-size: 15px;
   }
   
   .btn--large {
-    padding: 12px 26px;
-    font-size: 25px;
+    padding: 9px 15px;
+    font-size: 18px;
   }
   
   .btn--large:hover,
@@ -49,12 +49,12 @@
     background-color: black;
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 8px 15px;
+    border-radius: 2px;
   }
   
   .btn--solid-black:hover {
-    background-color: #333; /* Slightly lighter shade on hover */
-    transition: background-color 0.3s ease;
+    background-color: #037ef3; /* Slightly lighter shade on hover */
+    transition: background-color 0.2s ease;
   }
   
