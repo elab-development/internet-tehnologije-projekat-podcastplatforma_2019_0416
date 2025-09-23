@@ -17,6 +17,7 @@ Route::get('/episodes/{id}', [EpisodeController::class, 'show'])->name('episodes
 Route::post('login', [AuthController::class, 'login']); // Login route
 Route::post('register', [AuthController::class, 'register']); // Registration route
 
+Route::middleware('auth:sanctum')->apiResource('episodes', EpisodeController::class)->except(['index', 'show'])->where(['episode' => '[0-9]+']);
 // Guest routes (Create a guest) - Protected by authentication
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/guests', [GuestController::class, 'store'])->name('guests.store'); // Store a new guest
@@ -47,6 +48,6 @@ Route::middleware('auth:sanctum')->post('/episodes/upload', [EpisodeController::
 Route::get('/episodes/search', [EpisodeController::class, 'search'])->name('episodes.search');
 
 // Resource route
-Route::middleware('auth:sanctum')->apiResource('episodes', EpisodeController::class)->except(['index', 'show']);
+
 
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
