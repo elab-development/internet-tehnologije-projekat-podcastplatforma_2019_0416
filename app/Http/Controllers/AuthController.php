@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -74,51 +75,125 @@ class AuthController extends Controller
     //     ], 201);
     // }
 
-public function forgotPassword(Request $request)
-{
-    $request->validate(['email' => 'required|email']);
+    public function forgotPassword(Request $request)
+    {
+        // $request->validate(['email' => 'required|email']);
 
-    $status = Password::sendResetLink(
-        $request->only('email')
-    );
+        // $status = Password::sendResetLink(
+        //     $request->only('email')
+        // );
 
-    return $status ===Password::RESET_LINK_SENT
-        ? response()->json(['message' => __($status)])
-        : response()->json(['message' => __($status)], 400);
-}
+        // $response = ['message' => __($status)];
 
-public function resetPassword(Request $request)
-{
-    $request->validate([
-        'token' => 'required',
-        'email' => 'required|email',
-        'password' => 'required|min:8|confirmed',
-    ]);
+        // if (config('app.env') !== 'production' && $status === Password::RESET_LINK_SENT) {
+        //     $token = DB::table('password_reset_tokens')
+        //         ->where('email', $request->email)
+        //         ->first();
 
-    $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
-        function ($user, $password) {
-            $user->forceFill([
-                'password' => Hash::make($password)
-            ])->setRememberToken(Str::random(60));
+        //     if ($token) {
+        //         $response['reset_token'] = $token->token;
+        //     }
+        // }
 
-            $user->save();
+        // return $status === Password::RESET_LINK_SENT
+        //     ? response()->json($response)
+        //     : response()->json($response, 400);
 
-            event(new PasswordReset($user));
+        $request->validate(['email' => 'required|email']);
+
+    // Generate the plain token first (for development use)
+        $plainToken = null;
+        if (config('app.env') !== 'production') {
+            $plainToken = Str::random(64); // This is the token we'll return
         }
-    );
 
-    return $status === Password::PASSWORD_RESET
-        ? response()->json(['message' => __($status)])
-        : response()->json(['message' => __($status)], 400);
+        $status = Password::sendResetLink(
+            $request->only('email'),
+            function ($user, $token) use (&$plainToken) {
+                if (config('app.env') !== 'production') {
+                $plainToken = $token; // Capture the plain token from the callback
+                }
+            }
+        );
 
-}
+        $response = ['message' => __($status)];
 
-public function logout(Request $request)
-{
-    $request->user()->currentAccessToken()->delete();
+    // For development/testing: include the plain token in response
+        if (config('app.env') !== 'production' && $status === Password::RESET_LINK_SENT && $plainToken) {
+            $response['reset_token'] = $plainToken;
+        }
 
-    return response()->json(['message' => 'Logged out successfully']);
-}
+        return $status === Password::RESET_LINK_SENT
+            ? response()->json($response)
+            : response()->json($response, 400);
+
+
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+    // return $status === Password::PASSWORD_RESET
+    //     ? response()->json(['message' => __($status)])
+    //     : response()->json(['message' => __($status)], 400);
+
+        if ($status === Password::PASSWORD_RESET) {
+            return response()->json(['message' => 'Password reset successfully']);
+        }
+
+        return response()->json([
+            'message' => 'Password reset failed',
+            'errors' => ['email' => [__($status)]]
+        ], 400);
+
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json(['message' => 'Logged out successfully']);
+    }
+
+
+    public function getResetToken(Request $request)
+    {
+        if (config('app.env') === 'production') {
+            return response()->json(['message' => 'Not available in production'], 403);
+        }
+
+        $request->validate(['email' => 'required|email']);
+
+        $token = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->first();
+
+        if (!$token) {
+            return response()->json(['message' => 'No reset token found'], 404);
+        }
+
+        return response()->json(['reset_token' => $token->token]);
+    }
+
+
+
 
 }

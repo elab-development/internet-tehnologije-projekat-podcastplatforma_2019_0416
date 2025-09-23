@@ -51,3 +51,7 @@ Route::get('/episodes/search', [EpisodeController::class, 'search'])->name('epis
 
 
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
+if (!app()->environment('production')) {
+    Route::post('/get-reset-token', [AuthController::class, 'getResetToken']);
+}
