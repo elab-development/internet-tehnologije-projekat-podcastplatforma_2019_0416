@@ -5,7 +5,8 @@ import './ResetPassword.css';
 import { Button } from '../Button';
 
 const ResetPassword = () => {
-  const { token } = useParams(); // Get the token from the URL
+  const { token } = useParams();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -23,24 +24,39 @@ const ResetPassword = () => {
     }
 
     try {
-      await axios.post('http://localhost:3000/reset-password', { token, password });
+      await axios.post('http://localhost:8000/api/reset-password', { 
+        token, 
+        email,
+        password, 
+        password_confirmation: confirmPassword 
+      });
       setSuccess('Password has been reset successfully.');
-      navigate('/login'); // Redirect to login page
+      setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
-      setError('Failed to reset password.');
+      console.error('Reset password error:', err.response?.data);
+      setError(err.response?.data?.message || 'Failed to reset password.');
     }
   };
 
-  useEffect(() => {
-    if (!token) {
-      setError('Invalid or missing token.');
-    }
-  }, [token]);
+  // useEffect(() => {
+  //   if (!token) {
+  //     setError('Invalid or missing token.');
+  //   }
+  // }, [token]);
 
   return (
     <div className="reset-password-container">
       <h2>Reset Password</h2>
       <form onSubmit={handleSubmit}>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
         <div>
           <label>New Password:</label>
           <input
@@ -62,7 +78,6 @@ const ResetPassword = () => {
         {error && <p style={{ color: 'red' }}>{error}</p>}
         {success && <p style={{ color: 'green' }}>{success}</p>}
 
-
         <Button 
           type="submit" 
           buttonStyle="btn--primary" 
@@ -70,8 +85,6 @@ const ResetPassword = () => {
         >
           Reset Password
         </Button>
-
-
       </form>
     </div>
   );
