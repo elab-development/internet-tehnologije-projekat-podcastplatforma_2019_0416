@@ -22,8 +22,15 @@ const Login = () => {
         password,
       });
 
+      console.log('Login API Response:', response.data);
+
       // Store the token in local storage or any other storage
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify({
+        email: email,
+        is_admin: response.data.is_admin
+      }));
+      
 
       window.dispatchEvent(new Event('authChange'));
 
@@ -47,8 +54,14 @@ const Login = () => {
         password_confirmation: password
       });
 
+      console.log('Signup API Response:', response.data);
       // Store the token in local storage or any other storage
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify({
+        name: name,
+        email: email,
+        is_admin: response.data.is_admin
+      }));
 
       window.dispatchEvent(new Event('authChange'));
 

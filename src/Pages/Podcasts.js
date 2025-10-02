@@ -3,6 +3,8 @@ import axios from 'axios';
 import SearchBar from '../SearchBar';
 import './Podcasts.css';
 import CardItem from '../CardItem';
+import AdminOnly from '../components/AdminOnly';
+import { Button } from '../Button';
 
 const Podcasts = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,7 +22,7 @@ const Podcasts = () => {
       let url = 'http://localhost:8000/api/episodes';
       
       if (searchTerm) {
-      url = `http://localhost:8000/api/episodes/search?search=${encodeURIComponent(searchTerm)}`;
+        url = `http://localhost:8000/api/episodes/search?search=${encodeURIComponent(searchTerm)}`;
       }
 
       const config = {
@@ -48,8 +50,21 @@ const Podcasts = () => {
 
   return (
     <div className='podcasts'>
-      <h1>Podcast Gallery</h1>
+      <div className="podcasts__header">
+        <h1>Podcast Gallery</h1>
+        <AdminOnly>
+          <Button 
+            onClick={() => console.log('Open upload modal')}
+            buttonStyle="btn--primary"
+            buttonSize="btn--medium"
+          >
+            Upload New Episode
+          </Button>
+        </AdminOnly>
+      </div>
+      
       <SearchBar onSearch={handleSearch} />
+      
       <div className='podcasts__container'>
         {loading ? (
           <p>Loading...</p>

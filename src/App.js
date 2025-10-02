@@ -8,6 +8,8 @@ import Guests from './Pages/Guests';
 import Login from './Pages/Login';
 import RequestPasswordReset from './Pages/RequestPasswordReset';
 import ResetPassword from './Pages/ResetPassword';
+import Upload from './Pages/Upload';
+import AdminPanel from './Pages/AdminPanel';
 import Footer from './Footer';
 import './App.css';
 
@@ -23,6 +25,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/request-password-reset" element={<RequestPasswordReset />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/upload" element={<Upload />} /> 
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
         <Footer />
       </div>

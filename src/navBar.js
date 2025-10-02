@@ -4,10 +4,12 @@ import axios from 'axios';
 import './navBar.css';
 import logo from './mylogo.png';
 import { Button } from './Button';
+import { useAuth } from './hooks/useAuth';
 
 function NavBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const { isAdmin } = useAuth(); // DODAJ OVO
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -16,15 +18,12 @@ function NavBar() {
     };
 
     checkLoginStatus();
-
     window.addEventListener('storage', checkLoginStatus);
-    
-    const handleAuthChange = () => checkLoginStatus();
-    window.addEventListener('authChange', handleAuthChange);
+    window.addEventListener('authChange', checkLoginStatus);
 
     return () => {
       window.removeEventListener('storage', checkLoginStatus);
-      window.removeEventListener('authChange', handleAuthChange);
+      window.removeEventListener('authChange', checkLoginStatus);
     };
   }, []);
 
@@ -43,6 +42,7 @@ function NavBar() {
       console.error('Logout error:', error);
     } finally {
       localStorage.removeItem('token');
+      localStorage.removeItem('user'); // DODAJ OVO
       setIsLoggedIn(false);
       
       window.dispatchEvent(new Event('authChange'));
@@ -73,6 +73,22 @@ function NavBar() {
             Guests
           </Link>
         </li>
+        
+        {/* DODAJ ADMIN LINKOVE */}
+        {isAdmin && (
+          <>
+            <li className='nav-item'>
+              <Link to='/admin' className='nav-links admin-link'>
+                Admin Panel
+              </Link>
+            </li>
+            <li className='nav-item'>
+              <Link to='/upload' className='nav-links admin-link'>
+                Upload
+              </Link>
+            </li>
+          </>
+        )}
       </ul>
 
       <div className='navbar-right'>
