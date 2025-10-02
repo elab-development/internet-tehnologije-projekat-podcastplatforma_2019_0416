@@ -16,7 +16,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // Add the 'role' field to fillable
+        'is_admin',
     ];
 
     protected $hidden = [
@@ -29,7 +29,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'isAdmin' => 'boolean', // Cast the 'isAdmin' attribute to boolean
+            'is_admin' => 'boolean', // Cast the 'isAdmin' attribute to boolean
         ];
     }
 
@@ -48,7 +48,7 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin' || $this->isAdmin; // Assuming 'admin' role or 'isAdmin' field
+        return $this->is_admin === true;
     }
 
     // Other relationship methods can be added here as needed

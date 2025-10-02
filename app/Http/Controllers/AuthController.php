@@ -21,7 +21,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('Aplikacija')->plainTextToken;
-            return response()->json(['token' => $token]);
+            return response()->json(['token' => $token, 'is_admin' => $user->is_admin]);
         }
 
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -40,10 +40,11 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'is_admin' => false
         ]);
 
         $token = $user->createToken('Aplikacija')->plainTextToken;
-        return response()->json(['token' => $token], 201);
+        return response()->json(['token' => $token, 'is_admin' => $user->is_admin], 201);
     }
 
     // FORGOT PASSWORD - MODIFIKOVANA METODA
