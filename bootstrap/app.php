@@ -17,8 +17,17 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        //
+         $middleware->api(prepend: [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            \Illuminate\Http\Middleware\HandleCors::class,
+        ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'api/*',
+        ]);
     })
+
+
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

@@ -76,11 +76,24 @@ class EpisodeController extends Controller
 
     public function search(Request $request)
     {
-        $searchTerm = $request->query('kljucneReci'); //ili input
 
-        $episodes = Episode::where('kljucneReci', 'like', '%' . $searchTerm . '%')->get();
+        $searchTerm = $request->query('search') ?: $request->query('kljucneReci');
 
-        return response()->json(['episodes' => $episodes], 200);
+        if (!$searchTerm) {
+        return response()->json([], 200);
+        }
+
+        $episodes = Episode::where('naslov', 'like', '%' . $searchTerm . '%')
+            ->orWhere('opis', 'like', '%' . $searchTerm . '%')
+            ->orWhere('kljucneReci', 'like', '%' . $searchTerm . '%')
+            ->get();
+
+        return response()->json($episodes, 200);
+        // $searchTerm = $request->query('kljucneReci'); //ili input
+
+        // $episodes = Episode::where('kljucneReci', 'like', '%' . $searchTerm . '%')->get();
+
+        // return response()->json(['episodes' => $episodes], 200);
     }
 
     // GET /api/episodes/{id} - Retrieve a specific episode
