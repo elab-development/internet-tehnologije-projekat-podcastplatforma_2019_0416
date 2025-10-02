@@ -25,6 +25,8 @@ const Login = () => {
       // Store the token in local storage or any other storage
       localStorage.setItem('token', response.data.token);
 
+      window.dispatchEvent(new Event('authChange'));
+
       // Redirect to the Podcast Gallery page
       navigate('/podcasts');
     } catch (error) {
@@ -47,6 +49,8 @@ const Login = () => {
 
       // Store the token in local storage or any other storage
       localStorage.setItem('token', response.data.token);
+
+      window.dispatchEvent(new Event('authChange'));
 
       // Redirect to the Podcast Gallery page
       navigate('/podcasts');
