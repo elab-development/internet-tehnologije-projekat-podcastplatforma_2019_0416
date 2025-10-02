@@ -7,6 +7,7 @@ import { Button } from '../Button';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [isSignup, setIsSignup] = useState(false); // State to toggle between login and signup
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3000/login', {
+      const response = await axios.post('http://localhost:8000/api/login', {
         email,
         password,
       });
@@ -36,9 +37,12 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3000/signup', {
-        email,
-        password,
+
+      const response = await axios.post('http://localhost:8000/api/register', {
+        name: name,
+        email: email,
+        password: password,
+        password_confirmation: password
       });
 
       // Store the token in local storage or any other storage
@@ -47,7 +51,8 @@ const Login = () => {
       // Redirect to the Podcast Gallery page
       navigate('/podcasts');
     } catch (error) {
-      setError('Signup failed');
+      console.error('Signup error: ', error.response?.data);
+      setError('Signup failed: ' + (error.response?.data?.message || 'Unknown error'));
     }
   };
 
@@ -55,6 +60,17 @@ const Login = () => {
     <div className="login-container">
       <h2>{isSignup ? 'Sign Up' : 'Login'}</h2>
       <form onSubmit={isSignup ? handleSignup : handleLogin}>
+        {isSignup && (
+          <div>
+            <label>Name:</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+        )}
         <div>
           <label>Email:</label>
           <input

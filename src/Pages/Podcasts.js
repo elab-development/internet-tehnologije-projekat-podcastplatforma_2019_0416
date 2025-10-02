@@ -1,57 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import SearchBar from '../SearchBar';
 import './Podcasts.css';
 import CardItem from '../CardItem';
 
 const Podcasts = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  
-  const podcastsData = [
-    {
-      title: 'Podcast 1',
-      description: 'Description for Podcast 1',
-      keywords: ['tech', 'innovation'],
-      videoSrc: '/videos/podcast1.mp4'
-    },
-    {
-      title: 'Podcast 2',
-      description: 'Description for Podcast 2',
-      keywords: ['science', 'education'],
-      videoSrc: '/videos/podcast2.mp4'
-    },
-    {
-      title: 'Podcast 3',
-      description: 'Description for Podcast 3',
-      keywords: ['nature', 'science'],
-      videoSrc: '/videos/podcast3.mp4'
-    },
-    {
-      title: 'Podcast 4',
-      description: 'Description for Podcast 4',
-      keywords: ['finance', 'education'],
-      videoSrc: '/videos/podcast4.mp4'
-    },
-    {
-      title: 'Podcast 5',
-      description: 'Description for Podcast 5',
-      keywords: ['tech', 'AI'],
-      videoSrc: '/videos/podcast5.mp4'
-    }  ];
+  const [podcasts, setPodcasts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredPodcasts = podcastsData.filter(podcast => 
-    podcast.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    podcast.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    podcast.keywords.some(keyword => keyword.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  useEffect(() => {
+    fetchEpisodes();
+  }, []);
+
+  const fetchEpisodes = async (searchTerm = '') => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      let url = 'http://localhost:8000/api/episodes';
+      
+      if (searchTerm) {
+      url = `http://localhost:8000/api/episodes/search?search=${encodeURIComponent(searchTerm)}`;
+      }
+
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      };
+
+      const response = await axios.get(url, config);
+      console.log('API Response:', response.data);
+      
+      setPodcasts(response.data);
+    } catch (error) {
+      console.error('Error fetching episodes:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    fetchEpisodes(query);
+  };
 
   return (
     <div className='podcasts'>
       <h1>Podcast Gallery</h1>
-      <SearchBar onSearch={setSearchQuery} />
+      <SearchBar onSearch={handleSearch} />
       <div className='podcasts__container'>
-        {filteredPodcasts.length > 0 ? (
-          filteredPodcasts.map((podcast) => (
-            <CardItem key={podcast.title} podcast={podcast} />
+        {loading ? (
+          <p>Loading...</p>
+        ) : podcasts.length > 0 ? (
+          podcasts.map((podcast) => (
+            <CardItem key={podcast.id} podcast={podcast} />
           ))
         ) : (
           <p>No podcasts found.</p>
