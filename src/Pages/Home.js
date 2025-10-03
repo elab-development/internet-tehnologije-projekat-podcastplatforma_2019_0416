@@ -1,6 +1,7 @@
 import React from 'react';
 import './Home.css';
 import { Link } from 'react-router-dom';
+import RecommendedVideos from '../components/RecommendedVideos';
 
 const testimonials = [
   {
@@ -58,6 +59,9 @@ const Home = () => {
               <span>- {testimonial.author}</span>
             </div>
           ))}
+          <section className="recommended-section">
+            <RecommendedVideos />
+          </section>
         </div>
       </section>
     </div>

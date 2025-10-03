@@ -117,3 +117,7 @@
 .footer a:hover {
   text-decoration: underline;
 }
+
+.recommended-section {
+  margin: 3rem 0;
+}
