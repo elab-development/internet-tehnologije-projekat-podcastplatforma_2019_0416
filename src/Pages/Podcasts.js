@@ -52,15 +52,6 @@ const Podcasts = () => {
     <div className='podcasts'>
       <div className="podcasts__header">
         <h1>Podcast Gallery</h1>
-        <AdminOnly>
-          <Button 
-            onClick={() => console.log('Open upload modal')}
-            buttonStyle="btn--primary"
-            buttonSize="btn--medium"
-          >
-            Upload New Episode
-          </Button>
-        </AdminOnly>
       </div>
       
       <SearchBar onSearch={handleSearch} />

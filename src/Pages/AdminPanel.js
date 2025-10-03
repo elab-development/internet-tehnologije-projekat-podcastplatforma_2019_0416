@@ -1,122 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './AdminPanel.css';
-import AdminOnly from '../components/AdminOnly';
-import { Button } from '../Button';
+import { Button } from "../Button";
 
-const AdminPanel = () => {
-  const [stats, setStats] = useState({
-    episodes: 0,
-    guests: 0,
-    users: 0
-  });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json'
-        }
-      };
-
-      // Ovdje možeš dodati API pozive za statistiku kada budu spremni
-      // const episodesResponse = await axios.get('http://localhost:8000/api/episodes', config);
-      // const guestsResponse = await axios.get('http://localhost:8000/api/guests', config);
-      
-      // Za sada, postavljamo placeholder vrijednosti
-      setStats({
-        episodes: 15, // Zamijeni sa stvarnim podacima
-        guests: 8,    // Zamijeni sa stvarnim podacima
-        users: 124    // Zamijeni sa stvarnim podacima
-      });
-    } catch (error) {
-      console.error('Error fetching stats:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return <div className="admin-panel"><p>Loading admin panel...</p></div>;
-  }
-
+export default function AdminPanel() {
   return (
-    <AdminOnly>
-      <div className="admin-panel">
-        <div className="admin-panel__header">
-          <h1>Admin Panel</h1>
-          <p>Manage your podcast platform</p>
-        </div>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
 
-        <div className="admin-panel__stats">
-          <div className="stat-card">
-            <h3>Total Episodes</h3>
-            <p className="stat-number">{stats.episodes}</p>
-          </div>
-          <div className="stat-card">
-            <h3>Total Guests</h3>
-            <p className="stat-number">{stats.guests}</p>
-          </div>
-          <div className="stat-card">
-            <h3>Total Users</h3>
-            <p className="stat-number">{stats.users}</p>
-          </div>
+      
+      <div className="bg-white border rounded-xl shadow p-6 max-w-2xl mx-auto">
+        <h2 className="text-xl font-semibold mb-6">Administrativne Akcije</h2>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button 
+            buttonStyle="btn--primary"
+            buttonSize="btn--large"
+            link="/upload"
+            className="flex-1 text-center min-w-[200px]"
+          >
+            📤 Upload Epizoda
+          </Button>
+          <Button 
+            buttonStyle="btn--primary"
+            buttonSize="btn--large"
+            link="/add-guest"
+            className="flex-1 text-center min-w-[200px]"
+          >
+            👥 Dodaj Gosta
+          </Button>
         </div>
-
-        <div className="admin-panel__actions">
-          <h2>Quick Actions</h2>
-          <div className="action-buttons">
-            <Button 
-              link="/upload"
-              buttonStyle="btn--primary"
-              buttonSize="btn--large"
-            >
-              Upload New Episode
-            </Button>
-            
-            <Button 
-              onClick={() => console.log('Open add guest modal')}
-              buttonStyle="btn--primary"
-              buttonSize="btn--large"
-            >
-              Add New Guest
-            </Button>
-            
-            <Button 
-              onClick={() => console.log('Open user management')}
-              buttonStyle="btn--primary" 
-              buttonSize="btn--large"
-            >
-              Manage Users
-            </Button>
-            
-            <Button 
-              onClick={() => console.log('Open analytics')}
-              buttonStyle="btn--primary"
-              buttonSize="btn--large"
-            >
-              View Analytics
-            </Button>
-          </div>
-        </div>
-
-        <div className="admin-panel__recent">
-          <h2>Recent Activity</h2>
-          <div className="recent-activity">
-            <p>No recent activity to display</p>
-            {/* Ovdje možeš dodati listu nedavnih epizoda, gostiju, itd. */}
-          </div>
+        
+        <div className="mt-6 text-center text-gray-600">
+          <p>Odaberite akciju koju želite da izvršite</p>
         </div>
       </div>
-    </AdminOnly>
+    </div>
   );
-};
-
-export default AdminPanel;
+}

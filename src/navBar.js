@@ -9,7 +9,7 @@ import { useAuth } from './hooks/useAuth';
 function NavBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-  const { isAdmin } = useAuth(); // DODAJ OVO
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -74,7 +74,7 @@ function NavBar() {
           </Link>
         </li>
         
-        {/* DODAJ ADMIN LINKOVE */}
+        
         {isAdmin && (
           <>
             <li className='nav-item'>
@@ -82,11 +82,11 @@ function NavBar() {
                 Admin Panel
               </Link>
             </li>
-            <li className='nav-item'>
+            {/* <li className='nav-item'>
               <Link to='/upload' className='nav-links admin-link'>
                 Upload
               </Link>
-            </li>
+            </li> */}
           </>
         )}
       </ul>

@@ -12,6 +12,7 @@ import Upload from './Pages/Upload';
 import AdminPanel from './Pages/AdminPanel';
 import Footer from './Footer';
 import './App.css';
+import AddGuest from './Pages/AddGuest.js';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/upload" element={<Upload />} /> 
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/add-guest" element={<AddGuest />} />
         </Routes>
         <Footer />
       </div>
