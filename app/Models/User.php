@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Laravel\Sanctum\HasApiTokens; // Add Sanctum trait
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -24,14 +24,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_admin' => 'boolean', // Cast the 'isAdmin' attribute to boolean
-        ];
-    }
+    protected  $casts= [
+        'email_verified_at' => 'datetime',
+        'is_admin' => 'boolean',
+    ];
 
     /**
      * Get the episodes associated with the user.

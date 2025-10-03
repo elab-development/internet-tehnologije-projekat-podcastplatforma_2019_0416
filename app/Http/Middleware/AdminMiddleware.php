@@ -9,13 +9,16 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminMiddleware
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
+        $user = Auth::user(); // Koristi Auth::user() umesto $request->user()
+
         // Proveri da li je korisnik autentifikovan i da li je admin
-        if (!Auth::check() || !Auth::user()->is_admin) {
-            return response()->json([
-                'message' => 'Unauthorized. Admin access required.'
-            ], 403);
+        if (!$user || !$user->isAdmin()) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['message' => 'Forbidden — admin only'], Response::HTTP_FORBIDDEN);
+            }
+            return redirect('/login');
         }
 
         return $next($request);

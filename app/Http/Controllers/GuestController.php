@@ -28,13 +28,25 @@ class GuestController extends Controller
         $request->validate([
             'imePrezimeG' => 'required|string',
             'firma' => 'required|string',
-            'bio' => 'required|string'
+            'bio' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        // Create a new guest
-        $guest = Guest::create($request->only(['imePrezimeG', 'firma',  'bio']));
+        $guest = new Guest();
+        $guest->imePrezimeG = $request->imePrezimeG;
+        $guest->firma = $request->firma;
+        $guest->bio = $request->bio;
+        
+        $data = $request->only(['imePrezimeG', 'firma', 'bio', 'image']);
 
-        return redirect()->route('guests.index'); // Redirect to guest list after creation
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('guest_images', 'public');
+            $data['image'] = $imagePath;
+        }
+
+        $guest = Guest::create($data);
+
+        return response()->json(['guest' => $guest], 201);
     }
 
     // Web: Display a single guest's details in a view

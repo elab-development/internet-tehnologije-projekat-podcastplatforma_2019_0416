@@ -13,7 +13,7 @@ class Guest extends Model
     protected $table = 'guests';
 
     // Specify the attributes that are mass assignable
-    protected $fillable = ['imePrezimeG', 'firma', 'bio'];
+    protected $fillable = ['imePrezimeG', 'firma', 'bio', 'image'];
 
     // Optionally define hidden attributes, e.g. to hide sensitive information
     protected $hidden = [

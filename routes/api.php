@@ -6,6 +6,7 @@ use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
 
 // Public routes
 Route::get('/guests', [GuestController::class, 'index'])->name('guests.index');
@@ -22,14 +23,18 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 
 // Admin only routes
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-    // Episode management (samo admin)
+    // Episode management
     Route::post('/episodes', [EpisodeController::class, 'store'])->name('episodes.store');
     Route::put('/episodes/{id}', [EpisodeController::class, 'update'])->name('episodes.update');
     Route::delete('/episodes/{id}', [EpisodeController::class, 'destroy'])->name('episodes.destroy');
-    Route::post('/episodes/upload', [EpisodeController::class, 'upload'])->name('episodes.upload');
 
-    // Guest management (samo admin)
+    //Route::post('/episodes/upload', [EpisodeController::class, 'upload'])->name('episodes.upload');
+    //Statistika
+    Route::get('/admin/stats', [AdminController::class, 'getStats']);
+
+    // Guest management
     Route::post('/guests', [GuestController::class, 'store'])->name('guests.store');
+
 });
 
 // Authenticated user routes (svi autentifikovani korisnici)

@@ -18,8 +18,8 @@ class Episode extends Model
         'datum',
         'audio_video_path',
         'file_type',
-        'guest_id', // Foreign key for the guest
-        'user_id',  // Foreign key for the user (creator)
+        'guest_id', 
+        'user_id',
     ];
 
     /**

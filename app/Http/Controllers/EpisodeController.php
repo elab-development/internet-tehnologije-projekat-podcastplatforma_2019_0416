@@ -5,104 +5,99 @@ namespace App\Http\Controllers;
 use App\Models\Episode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Log;
 
 class EpisodeController extends Controller
 {
     // GET /api/episodes - Fetch all episodes
     public function index()
     {
-        return response()->json(Episode::all(), 200);
+        $episodes = Episode::with('guest')->orderBy('datum', 'desc')->get();
+        return response()->json($episodes, 200);
     }
 
     // POST /api/episodes - Create a new episode
     public function store(Request $request)
     {
-        // // Validation rules
-        // $request->validate([
-        //     'kljucneReci' => 'required|string',
-        //     'trajanje' => 'required|integer',
-        //     'opis' => 'required|string',
-        //     'datum' => 'required|date',
-        //     'naslov' => 'required|string',
-        //     'audio_video' => 'required|file|mimes:mp3,mp4,wav|max:20480', // File validation with max size 20MB
-        // ]);
+        try {
+            Log::info('Store method called', ['request_data' => $request->all()]);
 
-        // // Store the uploaded file and retrieve the path
-        // $path = $request->file('audio_video')->store('episodes');
+            $validated = $request->validate([
+                'audio_video' => 'required|file|mimes:mp3,mp4,wav|max:20480', // 20MB
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'guest_id' => 'required|exists:guests,id',
+                'keywords' => 'nullable|string'
+            ]);
 
-        // // Create and save a new episode
-        // $episode = Episode::create([
-        //     'kljucneReci' => $request->kljucneReci,
-        //     'trajanje' => $request->trajanje,
-        //     'opis' => $request->opis,
-        //     'datum' => $request->datum,
-        //     'naslov' => $request->naslov,
-        //     'audio_video_path' => $path,
-        //     'file_type' => $request->file('audio_video')->getClientOriginalExtension(),
-        // ]);
+            Log::info('Validation passed');
 
-        // return response()->json(['episode' => $episode], 201);
+            // Store the file
+            $file = $request->file('audio_video');
+            $path = $file->store('episodes', 'public');
 
-        $request->validate([
-            'audio_video' => 'required|file|mimes:mp3,mp4,wav|mimetypes:video/mp4,video/mpeg,audio/mpeg,audio/wav|max:20480',
-            'title' => 'required|string',
-            'description' => 'required|string',
-            'guest_id' => 'required|exists:guests,id'
-        ]);
+            Log::info('File stored', ['path' => $path]);
 
-        // Store the file
-        $path = $request->file('audio_video')->store('episodes', 'public');
+            // Create episode record
+            $episode = Episode::create([
+                'naslov' => $validated['title'],
+                'opis' => $validated['description'],
+                'audio_video_path' => $path,
+                'file_type' => $file->getClientOriginalExtension(),
+                'kljucneReci' => $validated['keywords'] ?? '',
+                'trajanje' => 0,
+                'datum' => now(),
+                'guest_id' => $validated['guest_id'],
+                'user_id' => auth()->id()
+            ]);
 
-        // Create episode record
-        $episode = Episode::create([
-            'naslov' => $request->title,
-            'opis' => $request->description,
-            'audio_video_path' => $path,
-            'file_type' => $request->file('audio_video')->getClientOriginalExtension(),
-            'kljucneReci' => $request->keywords ?? '',
-            'trajanje' => 0, // dodati logiku za izracunavanje trajanja
-            'datum' => now(),
-            'guest_id' => $request->guest_id
-        ]);
+            Log::info('Episode created', ['episode_id' => $episode->id]);
 
-        return response()->json([
-            'message' => 'File uploaded successfully',
-            'episode' => $episode,
-            'file_url' => asset("storage/$path")
-        ], 201);
+            // Load the guest relationship
+            $episode->load('guest');
+
+            return response()->json([
+                'message' => 'Episode uploaded successfully',
+                'episode' => $episode,
+                'file_url' => asset("storage/$path")
+            ], 201);
+
+        } catch (\Exception $e) {
+            Log::error('Upload error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'message' => 'Upload failed: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function search(Request $request)
     {
-
         $searchTerm = $request->query('search') ?: $request->query('kljucneReci');
 
         if (!$searchTerm) {
-        return response()->json([], 200);
+            return response()->json([], 200);
         }
 
-        $episodes = Episode::where('naslov', 'like', '%' . $searchTerm . '%')
+        $episodes = Episode::with('guest')
+            ->where('naslov', 'like', '%' . $searchTerm . '%')
             ->orWhere('opis', 'like', '%' . $searchTerm . '%')
             ->orWhere('kljucneReci', 'like', '%' . $searchTerm . '%')
             ->get();
 
         return response()->json($episodes, 200);
-        // $searchTerm = $request->query('kljucneReci'); //ili input
-
-        // $episodes = Episode::where('kljucneReci', 'like', '%' . $searchTerm . '%')->get();
-
-        // return response()->json(['episodes' => $episodes], 200);
     }
 
     // GET /api/episodes/{id} - Retrieve a specific episode
     public function show($id)
     {
-        $episode = Episode::findOrFail($id);
+        $episode = Episode::with('guest')->findOrFail($id);
 
         // Generate URL for the media file
-        $mediaUrl = Storage::url($episode->audio_video_path);
+        $mediaUrl = asset('storage/' . $episode->audio_video_path);
 
         return response()->json([
             'episode' => $episode,
@@ -116,22 +111,23 @@ class EpisodeController extends Controller
         $episode = Episode::findOrFail($id);
 
         // Validation rules for update
-        $request->validate([
-            'kljucneReci' => 'sometimes|required|string',
-            'trajanje' => 'sometimes|required|integer',
-            'opis' => 'sometimes|required|string',
-            'datum' => 'sometimes|required|date',
-            'naslov' => 'sometimes|required|string',
+        $validated = $request->validate([
+            'kljucneReci' => 'sometimes|string',
+            'trajanje' => 'sometimes|integer',
+            'opis' => 'sometimes|string',
+            'datum' => 'sometimes|date',
+            'naslov' => 'sometimes|string|max:255',
             'audio_video' => 'sometimes|file|mimes:mp3,mp4,wav|max:20480',
+            'guest_id' => 'sometimes|exists:guests,id'
         ]);
 
         // Handle file update if a new file is uploaded
         if ($request->hasFile('audio_video')) {
             // Delete the existing file
-            Storage::delete($episode->audio_video_path);
+            Storage::disk('public')->delete($episode->audio_video_path);
 
             // Store the new file
-            $path = $request->file('audio_video')->store('episodes');
+            $path = $request->file('audio_video')->store('episodes', 'public');
             $episode->audio_video_path = $path;
             $episode->file_type = $request->file('audio_video')->getClientOriginalExtension();
         }
@@ -148,43 +144,11 @@ class EpisodeController extends Controller
         $episode = Episode::findOrFail($id);
 
         // Delete associated file
-        Storage::delete($episode->audio_video_path);
+        Storage::disk('public')->delete($episode->audio_video_path);
 
         // Delete the episode record
         $episode->delete();
 
         return response()->json(['message' => 'Episode deleted successfully'], 200);
     }
-
-    public function upload(Request $request) //da li je user admin
-    {
-        $request->validate([
-            'audio_video' => 'required|file|mimes:mp3,mp4,wav|mimetypes:video/mp4,video/mpeg,audio/mpeg,audio/wav|max:20480',
-            'title' => 'required|string',
-            'description' => 'required|string',
-            'guest_id' => 'required|exists:guests,id'
-        ]);
-
-        // Store the file
-        $path = $request->file('audio_video')->store('episodes', 'public');
-
-        // Create episode record
-        $episode = Episode::create([
-            'naslov' => $request->title,
-            'opis' => $request->description,
-            'audio_video_path' => $path,
-            'file_type' => $request->file('audio_video')->getClientOriginalExtension(),
-         'kljucneReci' => $request->keywords ?? '',
-            'trajanje' => 0, // dodati logiku za izracunavanje trajanja
-         'datum' => now(),
-         'guest_id' => $request->guest_id
-        ]);
-
-        return response()->json([
-            'message' => 'File uploaded successfully',
-            'episode' => $episode,
-            'file_url' => asset("storage/$path")
-        ], 201);
-    }
-
 }
