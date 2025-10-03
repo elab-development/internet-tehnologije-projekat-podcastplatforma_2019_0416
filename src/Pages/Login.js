@@ -17,29 +17,29 @@ const Login = () => {
     setError('');
 
     try {
+    // ZAMENI OVAJ DEO:
       const response = await axios.post('http://localhost:8000/api/login', {
-        email,
-        password,
+        email: email,
+        password: password
       });
-
+    
+      const { token, is_admin } = response.data;
       console.log('Login API Response:', response.data);
 
-      // Store the token in local storage or any other storage
-      localStorage.setItem('token', response.data.token);
+    // Store the token in local storage or any other storage
+      localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify({
-        email: email,
-        is_admin: response.data.is_admin
+        is_admin: is_admin
       }));
-      
 
       window.dispatchEvent(new Event('authChange'));
 
-      // Redirect to the Podcast Gallery page
+    // Redirect to the Podcast Gallery page
       navigate('/podcasts');
     } catch (error) {
       setError('Invalid email or password');
     }
-  };
+};
 
   const handleSignup = async (e) => {
     e.preventDefault();

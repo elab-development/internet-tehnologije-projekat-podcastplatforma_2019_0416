@@ -59,3 +59,31 @@
 .navbar-right button {
   cursor: pointer;
 }
+
+/* Dodaj ove stilove u postojeći navBar.css */
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-profile-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.user-profile-link:hover {
+  color: #007bff;
+  background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+  .user-menu {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

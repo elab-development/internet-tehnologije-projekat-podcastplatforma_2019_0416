@@ -1,33 +1,48 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export const useAuth = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
+    checkAuthStatus();
+    window.addEventListener('authChange', checkAuthStatus);
+    return () => window.removeEventListener('authChange', checkAuthStatus);
+  }, []);
+
+  const checkAuthStatus = async () => {
     const token = localStorage.getItem('token');
     
-    if (userData && token) {
-      setUser(JSON.parse(userData));
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return;
     }
-    setLoading(false);
 
-    // Listen for auth changes
-    const handleAuthChange = () => {
-      const updatedUserData = localStorage.getItem('user');
-      const updatedToken = localStorage.getItem('token');
-      
-      if (updatedUserData && updatedToken) {
-        setUser(JSON.parse(updatedUserData));
-      } else {
+    try {
+      console.log('Fetching profile with token:', token);
+      const response = await axios.get('http://localhost:8000/api/profile', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      console.log('Profile response:', response.data);
+      setUser(response.data);
+    } catch (error) {
+      console.error('Auth check error:', error);
+      console.error('Error response:', error.response);
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
         setUser(null);
       }
-    };
-
-    window.addEventListener('authChange', handleAuthChange);
-    return () => window.removeEventListener('authChange', handleAuthChange);
-  }, []);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const isAdmin = user?.is_admin === true;
 

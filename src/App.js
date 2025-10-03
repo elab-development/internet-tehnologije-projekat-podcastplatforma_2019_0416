@@ -13,6 +13,7 @@ import AdminPanel from './Pages/AdminPanel';
 import Footer from './Footer';
 import './App.css';
 import AddGuest from './Pages/AddGuest.js';
+import Profile from './Pages/Profile.js';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/upload" element={<Upload />} /> 
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/add-guest" element={<AddGuest />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
         <Footer />
       </div>
