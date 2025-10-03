@@ -16,8 +16,21 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): Response
+    public function edit(Request $request)
     {
+    // Ako je API zahtev, vrati JSON
+        if ($request->expectsJson()) {
+            $user = $request->user();
+            return response()->json([
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'is_admin' => $user->is_admin,
+                'email_verified_at' => $user->email_verified_at,
+            ]);
+        }
+
+    // Inače vrati Inertia response
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
@@ -27,15 +40,29 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request)
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user->fill($request->validated());
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
+
+    // Ako je API zahtev, vrati JSON
+        if ($request->expectsJson()) {
+            return response()->json([
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'is_admin' => $user->is_admin,
+                'email_verified_at' => $user->email_verified_at,
+                'message' => 'Profile updated successfully'
+            ]);
+        }
 
         return Redirect::route('profile.edit');
     }
@@ -43,21 +70,38 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         $request->validate([
-            'password' => ['required', 'current_password'],
+            'password' => ['required'],
         ]);
 
         $user = $request->user();
 
-        Auth::logout();
+    // Proveri password manually
+        if (!\Hash::check($request->password, $user->password)) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'The provided password is incorrect.'
+                ], 422);
+            }
+            return back()->withErrors(['password' => 'The provided password is incorrect.']);
+        }
 
+    // Ako je password tačan, obriši korisnika
         $user->delete();
 
+    // API response - vrati success
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Account deleted successfully'
+            ], 200); // Explicitno vrati 200 status
+        }
+
+    // Web version
+        Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         return Redirect::to('/');
     }
 }
