@@ -7,6 +7,9 @@ use App\Http\Controllers\GuestController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\SuggestionController;
+
 
 // Public routes
 Route::get('/guests', [GuestController::class, 'index'])->name('guests.index');
@@ -16,6 +19,9 @@ Route::get('/episodes/search', [EpisodeController::class, 'search'])->name('epis
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
+
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe']);
+
 
 // Password reset
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
@@ -27,6 +33,11 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/episodes', [EpisodeController::class, 'store'])->name('episodes.store');
     Route::put('/episodes/{id}', [EpisodeController::class, 'update'])->name('episodes.update');
     Route::delete('/episodes/{id}', [EpisodeController::class, 'destroy'])->name('episodes.destroy');
+    Route::get('/admin/suggestions', [SuggestionController::class, 'index']);
+    Route::get('/admin/newsletter-subscribers', [NewsletterController::class, 'index']);
+    Route::get('/admin/newsletter-subscribers/export-pdf', [NewsletterController::class, 'exportPdf']);
+    Route::get('/admin/suggestions/export-pdf', [SuggestionController::class, 'exportPdf']);
+
 
     //Route::post('/episodes/upload', [EpisodeController::class, 'upload'])->name('episodes.upload');
     //Statistika
@@ -42,6 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/suggestions', [SuggestionController::class, 'store']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // User management (samo admin, ali ostaje u auth grupi)
